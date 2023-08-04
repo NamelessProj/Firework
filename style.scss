@@ -1,0 +1,278 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html{
+    color-scheme: dark;
+}
+
+body{
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    min-height: 100dvh;
+    line-height: 1.6;
+}
+
+header{
+    display: grid;
+    place-items: center;
+    padding-block: 2rem;
+
+    h1{
+        text-transform: uppercase;
+        position: relative;
+
+        &::after{
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2.5px;
+            background: #eee;
+            border-radius: 100vh;
+        }
+    }
+}
+
+section{
+    padding-block: 1rem;
+    width: min(95%, 1300px);
+    margin-inline: auto;
+}
+
+main{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    width: min(95%, 1300px);
+    margin-inline: auto;
+    padding-bottom: 2rem;
+
+    .section-1{
+        h2{
+            margin-bottom: .5rem;
+        }
+        p{
+            text-align: justify;
+
+            &:not(:last-child){
+                margin-bottom: .75rem;
+            }
+        }
+    }
+}
+
+
+
+/* MY SCENE */
+
+$duration: 5s;
+
+.scene-wrap{
+    background: #000;
+    perspective: 800px;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+
+    *:not(:empty){
+        transform-style: preserve-3d;
+    }
+}
+
+.scene{
+    position: relative;
+    transform:
+        rotateX(-15deg)
+        rotateY(0deg);
+    animation: scene #{$duration * 4} infinite linear;
+
+    @keyframes scene {
+        0%{
+            transform:
+            rotateX(-15deg)
+            rotateY(0deg);
+        }
+        100%{
+            transform:
+            rotateX(-15deg)
+            rotateY(-360deg);
+        }
+    }
+}
+
+.floor{
+    --_clr-bg: #3b3b3b;
+    position: absolute;
+    inset: -200vh;
+    border-radius: 200vh;
+
+    background-color: var(--_clr-bg);
+    opacity: 0.8;
+    background:
+        radial-gradient(circle, transparent 20%, var(--_clr-bg) 20%, var(--_clr-bg) 80%, transparent 80%, transparent),
+        radial-gradient(circle, transparent 20%, var(--_clr-bg) 20%, var(--_clr-bg) 80%, transparent 80%, transparent) 25px 25px,
+        linear-gradient(#444cf7 2px, transparent 2px) 0 -1px, linear-gradient(90deg, #444cf7 2px, var(--_clr-bg) 2px) -1px 0;
+    background-size: 50px 50px, 50px 50px, 25px 25px, 25px 25px;
+
+    transform:
+        rotateX(-90deg)
+        translateZ(125px);
+}
+
+.base{
+    position: absolute;
+    transform: translateY(100px);
+
+    .face{
+        --_width: -25px;
+        position: absolute;
+        inset: calc(var(--_width) / 2) var(--_width);
+        background: #9c9c9c;
+
+        &.face-front{
+            transform:
+                rotateY(0deg)
+                translateZ(var(--_width))
+                translateY(calc(var(--_width) / -2));
+            background: #a7a7a7;
+        }
+        &.face-right{
+            transform:
+                rotateY(90deg)
+                translateZ(var(--_width))
+                translateY(calc(var(--_width) / -2));
+            background: #818181;
+        }
+        &.face-back{
+            transform:
+                rotateY(180deg)
+                translateZ(var(--_width))
+                translateY(calc(var(--_width) / -2));
+            background: #383838;
+        }
+        &.face-left{
+            transform:
+                rotateY(-90deg)
+                translateZ(var(--_width))
+                translateY(calc(var(--_width) / -2));
+            background: #818181;
+            }
+        &.face-bottom{
+            transform:rotateX(-90deg)
+            translateZ(1px);
+            inset: var(--_width);
+        }
+        &.shadow{
+            transform:
+                rotateY(90deg)
+                rotateX(90deg)
+                translateZ(calc(var(--_width) + 1px))
+                translateX(calc(var(--_width) * 2));
+            inset: var(--_width);
+            inset-inline: -60px;
+            background: linear-gradient(
+                90deg,
+                rgb(0 0 0 / 0) 5px,
+                rgb(24 24 24 / .75)
+            );
+            filter: blur(2.5px);
+        }
+    }
+}
+
+.firework{
+    position: absolute;
+    transform: translateY(125px);
+    animation: firework $duration infinite linear;
+
+    .face{
+        position: absolute;
+        inset: -2px;
+        background: red;
+        border-radius: 100vh;
+
+        &.face-2{ transform: rotateX(90deg); }
+        &.face-3{ transform: rotateY(90deg); }
+    }
+
+    @keyframes firework {
+        0% {
+            transform: translateY(125px);
+        }
+
+        10% {
+            transform: translateY(-50px);
+            animation-timing-function: step-start;
+        }
+    }
+}
+
+.sparks{
+    position: absolute;
+
+    i{
+        position: absolute;
+        inset: var(--_wi);
+        background: hsl(var(--_hue) 100% 50%);
+        opacity: 0;
+        border-radius: 100vh;
+        animation: explode $duration infinite step-end;
+
+        @keyframes explode {
+            8%{
+                opacity: 0;
+                transform:
+                    translate3d(0, 0, var(--_tz))
+                    rotateX(var(--_rx))
+                    rotateY(var(--_ry))
+                    scale(0);
+                animation-timing-function: ease-out;
+            }
+            18%{
+                opacity: 1;
+                transform:
+                    translate3d(var(--_tx), var(--_ty), var(--_tz))
+                    rotateX(var(--_rx))
+                    rotateY(var(--_ry))
+                    scale(1);
+                animation-timing-function: ease-out;
+            }
+            100%{
+                opacity: 0;
+                transform:
+                    translate3d(calc(var(--_tx) * 1.5), var(--_ty-2), calc(var(--_tz) * 1.5))
+                    rotateX(calc(var(--_rx) * 4))
+                    rotateY(calc(var(--_ry) * 4))
+                    scale(0);
+            }
+        }
+
+        @for $i from 1 through 120 {
+            &:nth-child(#{$i}){
+                --_wi: #{random(15) - 15}px;
+                --_tz: #{random(180) - 90}px;
+                --_tx: #{random(180) - 90}px;
+                --_ty: #{random(180) - 240}px;
+                --_ty-2: calc(var(--_ty) + 100px);
+                --_rx: #{random(720) - 360}deg;
+                --_ry: #{random(720) - 360}deg;
+                --_hue: #{random(50) - 10};
+            }
+        }
+    }
+}
+
+
+
+/* SOME BASIC MEDIA QUERY */
+
+@media (width < 801px) {
+    main{
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 400px;
+    }
+}
